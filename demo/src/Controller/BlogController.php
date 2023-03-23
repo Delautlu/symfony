@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use symafony\Doctrine\common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Article;
@@ -41,8 +44,19 @@ $this->artRepo = $artRepo;
 
     #[Route('/blog/new', name: 'blog_create')]
 
-    public function create () {
-        return$this->render('blog/create.html.twig');
+    public function create (Request $request, ObjectManager $manager) {
+        $article = new Article();
+
+        $form = $this->createFormBuilder($article);
+                ->add('title')
+                ->add('content, TextType::class')
+                ->add('image')
+                ->getForm();
+
+        return $this->render('blog/create.html.twig' [
+            'formArticle' =>$form->createView()
+
+        ]);
     }
 
     #[Route('blog/{id}', name: 'blog_show')]
